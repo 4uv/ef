@@ -5,7 +5,7 @@ local sessionStats = {
     knuckles = 0,
     totalEventEggs = 0
 }
-
+local webhookURL = getgenv().WEBHOOK_URL
 local initialStats = {}  -- Initialize initialStats table
 
 -- Function to calculate the difference in statistics since the last webhook
@@ -42,7 +42,7 @@ local function sendWebhookMessage(embedFields)
     }
 
     local request = http_request or request or HttpPost or syn.request
-    local abcdef = {Url = urlz, Body = newdata, Method = "POST", Headers = headers}
+    local abcdef = {Url = webhookURL, Body = newdata, Method = "POST", Headers = headers}
     request(abcdef)
 end
 
