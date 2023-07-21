@@ -20,7 +20,6 @@ local function getAllPetIdentifiers()
     return identifiers
 end
 
--- Put all pets in the machine one by one
 local allPetIdentifiers = getAllPetIdentifiers()
 for _, identifier in ipairs(allPetIdentifiers) do
     putPetInMachine(identifier)
