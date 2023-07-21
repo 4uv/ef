@@ -118,7 +118,7 @@ end
 initialStats = getCurrentStatistics()
 -- Main loop
 while true do
-    wait(10) -- Wait for 5 Minutes
+    wait(300) -- Wait for 5 Minutes
     
         -- Retrieve current statistics
         local currentStats = getCurrentStatistics()
