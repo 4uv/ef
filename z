@@ -154,4 +154,3 @@ while true do
         initialStats.knuckles = currentStats.knuckles
         initialStats.totalEventEggs = currentStats.totalEventEggs
     end
-end
