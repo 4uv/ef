@@ -75,7 +75,7 @@ local function sendStatsWebhook()
             sendWebhookMessage(embedFields, mentionEveryone)
         end
 
-        wait(10) d
+        wait(10) 
     end
 end
 
