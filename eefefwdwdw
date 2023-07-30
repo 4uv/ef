@@ -36,10 +36,10 @@ local function getCurrentStatistics()
     local localPlayer = game.Players.LocalPlayer
     local crates = localPlayer.PlayerGui.GameUI.Menus.Arms.Container.Crates
 
-    local diamondKeyAmount = crates.DiamondKey.Toggle.Amount.Text
-    local goldKeyAmount = crates.GoldKey.Toggle.Amount.Text
-    local rustKeyAmount = crates.RustKey.Toggle.Amount.Text
-    local silverKeyAmount = crates.SilverKey.Toggle.Amount.Text
+    local diamondKeyAmount = tonumber(crates.DiamondKey.Toggle.Amount.Text:match("%d+")) or 0
+    local goldKeyAmount = tonumber(crates.GoldKey.Toggle.Amount.Text:match("%d+")) or 0
+    local rustKeyAmount = tonumber(crates.RustKey.Toggle.Amount.Text:match("%d+")) or 0
+    local silverKeyAmount = tonumber(crates.SilverKey.Toggle.Amount.Text:match("%d+")) or 0
 
     return diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount
 end
@@ -54,9 +54,8 @@ local function formatStatsToEmbedFields(diamondKeyAmount, goldKeyAmount, rustKey
     return embedFields
 end
 
--- Main function to send the webhook with the stats
 local function sendStatsWebhook()
-    local prevDiamondKeyAmount, prevGoldKeyAmount, prevRustKeyAmount, prevSilverKeyAmount
+    local prevDiamondKeyAmount, prevGoldKeyAmount, prevRustKeyAmount, prevSilverKeyAmount = 0, 0, 0, 0
 
     while true do
         local diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount = getCurrentStatistics()
@@ -66,7 +65,7 @@ local function sendStatsWebhook()
            rustKeyAmount ~= prevRustKeyAmount or
            silverKeyAmount ~= prevSilverKeyAmount then
 
-            local mentionEveryone = diamondKeyAmount > prevDiamondKeyAmount 
+            local mentionEveryone = diamondKeyAmount > prevDiamondKeyAmount -- Mention @everyone if Diamond Key Amount increased
             prevDiamondKeyAmount = diamondKeyAmount
             prevGoldKeyAmount = goldKeyAmount
             prevRustKeyAmount = rustKeyAmount
@@ -76,7 +75,7 @@ local function sendStatsWebhook()
             sendWebhookMessage(embedFields, mentionEveryone)
         end
 
-        wait(10) 
+        wait(10) d
     end
 end
 
