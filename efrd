@@ -46,10 +46,10 @@ end
 
 local function formatStatsToEmbedFields(diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount)
     local embedFields = {
-        { name = "Diamond Key Amount", value = tostring(diamondKeyAmount), inline = true },
-        { name = "Gold Key Amount", value = tostring(goldKeyAmount), inline = true },
-        { name = "Rust Key Amount", value = tostring(rustKeyAmount), inline = true },
-        { name = "Silver Key Amount", value = tostring(silverKeyAmount), inline = true },
+        { name = "Diamond Key Amount", value = "x" .. tostring(diamondKeyAmount), inline = true },
+        { name = "Gold Key Amount", value = "x" .. tostring(goldKeyAmount), inline = true },
+        { name = "Rust Key Amount", value = "x" .. tostring(rustKeyAmount), inline = true },
+        { name = "Silver Key Amount", value = "x" .. tostring(silverKeyAmount), inline = true },
     }
     return embedFields
 end
@@ -75,7 +75,7 @@ local function sendStatsWebhook()
             sendWebhookMessage(embedFields, mentionEveryone)
         end
 
-        wait(10) 
+        wait(10) -- Wait for 10 seconds before checking again
     end
 end
 
