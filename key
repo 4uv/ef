@@ -1,0 +1,82 @@
+local webhookURL = getgenv().WEBHOOK_URL
+
+local function sendWebhookMessage(embedFields, mentionEveryone)
+    local localPlayer = game.Players.LocalPlayer
+    local username = localPlayer.Name
+
+    local data = {
+        username = "AWS",
+        avatar_url = "https://cdn.discordapp.com/attachments/949088173928103956/1135049962401575005/Png.png",
+        content = mentionEveryone and "@everyone" or nil, 
+        embeds = {
+            {
+                title = username .. " stats",
+                type = "rich",
+                color = math.random(0x000000, 0xFFFFFF),
+                fields = embedFields,
+                footer = {
+                    text = os.date("%I:%M:%S %p")
+                }
+            }
+        }
+    }
+
+    local newdata = game:GetService("HttpService"):JSONEncode(data)
+
+    local headers = {
+        ["content-type"] = "application/json"
+    }
+
+    local request = http_request or request or HttpPost or syn.request
+    local abcdef = {Url = webhookURL, Body = newdata, Method = "POST", Headers = headers}
+    request(abcdef)
+end
+
+local function getCurrentStatistics()
+    local localPlayer = game.Players.LocalPlayer
+    local crates = localPlayer.PlayerGui.GameUI.Menus.Arms.Container.Crates
+
+    local diamondKeyAmount = tonumber(crates.DiamondKey.Toggle.Amount.Text:match("%d+")) or 0
+    local goldKeyAmount = tonumber(crates.GoldKey.Toggle.Amount.Text:match("%d+")) or 0
+    local rustKeyAmount = tonumber(crates.RustKey.Toggle.Amount.Text:match("%d+")) or 0
+    local silverKeyAmount = tonumber(crates.SilverKey.Toggle.Amount.Text:match("%d+")) or 0
+
+    return diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount
+end
+
+local function formatStatsToEmbedFields(diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount)
+    local embedFields = {
+        { name = "Diamond Key Amount", value = "x" .. tostring(diamondKeyAmount), inline = true },
+        { name = "Gold Key Amount", value = "x" .. tostring(goldKeyAmount), inline = true },
+        { name = "Rust Key Amount", value = "x" .. tostring(rustKeyAmount), inline = true },
+        { name = "Silver Key Amount", value = "x" .. tostring(silverKeyAmount), inline = true },
+    }
+    return embedFields
+end
+
+local function sendStatsWebhook()
+    local prevDiamondKeyAmount, prevGoldKeyAmount, prevRustKeyAmount, prevSilverKeyAmount = 0, 0, 0, 0
+
+    while true do
+        local diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount = getCurrentStatistics()
+
+        if diamondKeyAmount ~= prevDiamondKeyAmount or
+           goldKeyAmount ~= prevGoldKeyAmount or
+           rustKeyAmount ~= prevRustKeyAmount or
+           silverKeyAmount ~= prevSilverKeyAmount then
+
+            local mentionEveryone = diamondKeyAmount > prevDiamondKeyAmount -- Mention @everyone if Diamond Key Amount increased
+            prevDiamondKeyAmount = diamondKeyAmount
+            prevGoldKeyAmount = goldKeyAmount
+            prevRustKeyAmount = rustKeyAmount
+            prevSilverKeyAmount = silverKeyAmount
+
+            local embedFields = formatStatsToEmbedFields(diamondKeyAmount, goldKeyAmount, rustKeyAmount, silverKeyAmount)
+            sendWebhookMessage(embedFields, mentionEveryone)
+        end
+
+        wait(10) 
+    end
+end
+
+sendStatsWebhook()
